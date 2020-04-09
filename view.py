@@ -45,7 +45,7 @@ def resample(image, scan, new_spacing=[1,1,1]):
     #SliceThickness=0.1
     #PixelSpacing=1
     #spacing = np.array([scan[0].SliceThickness] + scan[0].PixelSpacing, dtype=np.float32)
-    spacing = np.array(np.array([2,10,10]), dtype=np.float32)
+    spacing = np.array(np.array([1,1,1]), dtype=np .float32)
     
     print('spacing',spacing)
 
@@ -77,12 +77,13 @@ def plot_3d(image, threshold=-300):
     fig = plt.figure()
     ax = Axes3D(fig)
     # Fancy indexing: `verts[faces]` to generate a collection of triangles
-    print(faces.shape)
-    print(verts.shape)
-    print(verts[faces].shape)
-    print(p.sum())
+    # print(faces.shape)
+    # print(verts.shape)
+    # print(verts[faces].shape)
+    # print(p.sum())
 
-    mesh = Poly3DCollection(verts[faces], alpha=1)
+
+    mesh = Poly3DCollection(verts[faces], alpha=0.7)
     face_color = [0.45, 0.45, 0.75]
     mesh.set_facecolor(face_color)
     ax.add_collection3d(mesh)
@@ -100,7 +101,7 @@ if __name__ =="__main__":
 
 	last_sum=0
 	image=[]
-	g=0
+	g=60
 	for i in range(g,g+20):
 		now_slice=(ToTensor(Image.open(path+('%05d'%i)+'_mask.png'))[0])
 		sum = torch.sum(now_slice)

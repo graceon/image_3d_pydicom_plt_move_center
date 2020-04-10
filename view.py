@@ -37,7 +37,7 @@ def get_pixels_hu(slices):
             image[slice_number] = image[slice_number].astype(np.int16)
 
         image[slice_number] += np.int16(intercept)
-    print('hu',image.shape)
+    #print('hu',image.shape)
     print(image.sum())
     return np.array(image, dtype=np.int16)
 def resample(image, scan, new_spacing=[1,1,1]):
@@ -83,7 +83,7 @@ def plot_3d(image, threshold=-300):
     # print(p.sum())
 
 
-    mesh = Poly3DCollection(verts[faces], alpha=0.7)
+    mesh = Poly3DCollection(verts[faces], alpha=0.5)
     face_color = [0.45, 0.45, 0.75]
     mesh.set_facecolor(face_color)
     ax.add_collection3d(mesh)
@@ -95,14 +95,14 @@ def plot_3d(image, threshold=-300):
     plt.show()
 
 if __name__ =="__main__":
-	path='./modset/'
+	path='./modset2/'
 
 
 
 	last_sum=0
 	image=[]
-	g=60
-	for i in range(g,g+20):
+	
+	for i in range(160,199):
 		now_slice=(ToTensor(Image.open(path+('%05d'%i)+'_mask.png'))[0])
 		sum = torch.sum(now_slice)
 		now_slice=now_slice.numpy().tolist()
@@ -114,14 +114,14 @@ if __name__ =="__main__":
 			continue
 
 	#image= (torch.stack([one,one,one],dim=0)*255).numpy()
-	print('orin')
+
 	#print(torch.sum(image))
 	first_patient = image
 	first_patient_pixels = get_pixels_hu(first_patient )
 	pix_resampled, spacing = resample(first_patient_pixels, first_patient, [1,1,1])
 
 
-	print('pix_resampled',pix_resampled.sum())
+	#print('pix_resampled',pix_resampled.sum())
 	plot_3d(pix_resampled, threshold=-300)
 # if __name__ =="__main__":
 # 	path='./train/'

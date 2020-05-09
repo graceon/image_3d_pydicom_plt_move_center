@@ -109,33 +109,58 @@ ds=slices[70]
 # 		print(data1[i])
 # 		print(data2[i])
 
-rand=torch.ones((128,128))
+
+hw=512
+
+rand=torch.ones((hw,hw))
 sign=1
-for h in range(128):
-	for w in range(128):
+for h in range(hw):
+	for w in range(hw):
 		rand[h][w]=sign
 		sign=-sign
 	sign=-sign
 
-rand=rand*300
+rand=rand*0
 
-for i in range(1,172):
-	now_slice=(ToTensor(Image.open('/fdisk/22/pat1/'+'Patient_1_%05d'%i+'_c.bmp'))[0])
+start = 1
+end = 195
+
+for i in range(start,end+1):
+	# now_slice=(ToTensor(Image.open('/fdisk/22/patient1/'+'Patient_01_%05d'%i+'.bmp'))[0])
+	# now_mask=(ToTensor(Image.open('/fdisk/22/patient1mask/'+"Patient_01_%05d_label.png"%i))[0])/0.00392
+	# now_slice=(ToTensor(Image.open('/fdisk/liver/train/'+'%03d'%i+'.png'))[0])
+	# now_mask=(ToTensor(Image.open('/fdisk/liver/train/'+"%03d_mask.png"%i))[0])
+
+	# now_slice=now_slice*200+900
+	
 
 
+	# ones=(now_slice<0.0001)
+
+	# high=ones
+	# high_rand=ones*rand
+
+	# med=(now_slice<0.90)*(now_slice>0.4)
+
+	# final=high*1000+high_rand
+	now_slice=(ToTensor(Image.open('/fdisk/esophagus/Patient_06/'+"Patient_06_%05d.bmp"%i))[0])
+	now_mask=(ToTensor(Image.open('/fdisk/esophagus/Patient_06/'+"Patient_06_%05d.png"%i))[0])/0.00392
+	now_slice=now_slice*400+900
+	now_slice=now_mask*now_slice
+	#now_slice=now_mask*900+(rand*now_mask)
 
 	#now_slice=now_slice*255+1000
-	ones=(now_slice<0.0001)
+	# ones=(now_slice<0.0001)
 
-	high=ones
-	high_rand=ones*rand
+	# high=ones
+	# high_rand=ones*rand
 
-	med=(now_slice<0.90)*(now_slice>0.4)
+	# med=(now_slice<0.90)*(now_slice>0.4)
 
-	final=high*1000+high_rand
+	# final=high*1000+high_rand
 
-	now_slice=final
-	if i ==1:
+	# now_slice=final
+	if i ==100:
 		plt.imshow(now_slice, cmap=plt.cm.bone)
 		#plt.imshow(final)
 		plt.show()
@@ -151,8 +176,8 @@ for i in range(1,172):
 	#print(ds.PrivateCreator)
 	#ds.PrivateCreator=ds.PrivateCreator+1
 
-	ds.ImagePositionPatient[0]=ds.ImagePositionPatient[0]+2
-	ds.SliceLocation=ds.SliceLocation+2
+	ds.ImagePositionPatient[0]=ds.ImagePositionPatient[0]+1
+	ds.SliceLocation=ds.SliceLocation+1
 	ds.SOPInstanceUID="1.2.840.113619.2.382.14436926.6891088.15513.1508036936.%03d"%(841+i)
 	#print(ds.Rawdatarunnumber)
 	#now_sum = int(torch.sum(now_slice.int()))
@@ -163,8 +188,8 @@ for i in range(1,172):
 	#print(ds)
 	# ds.PixelData = newimg.tobytes() 
 	#ds.__setattr__("SOP Instance UID","1.2.840.113619.2.382.14436926.6891088.15513.1508036936.%03d"%(841+i))
-	ds.__setattr__("Rows", 128)    # 设置新矩阵的row，row是newimg的row
-	ds.__setattr__("Columns", 128)    # 设置新矩阵的column，col是newimg的col
+	ds.__setattr__("Rows", 512)    # 设置新矩阵的row，row是newimg的row
+	ds.__setattr__("Columns", 512)    # 设置新矩阵的column，col是newimg的col
 	#ds.__setattr__("Images in Series", 171)    # 设置新矩阵的column，col是newimg的col
 	#ds.__setattr__("Last image number used", 171)    # 设置新矩阵的column，col是newimg的col
 	image2d=now_slice.numpy().astype(np.uint16)
@@ -175,7 +200,7 @@ for i in range(1,172):
 	# if(i==1):
 	# 	break
 	# print(torch.max(now_slice))
-	dcm_path="./bw1/ser017img%05d.dcm"%i
+	dcm_path="/fdisk/esophagus_3d/Patient_06_3/ser017img%05d.dcm"%i
 	ds.save_as(dcm_path)
 
 # plt.imshow(ds.pixel_array, cmap=plt.cm.bone)
